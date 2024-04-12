@@ -82,7 +82,7 @@ public extension Subtitles {
 			endTime: Time,
 			text: String
 		) {
-			assert(startTime < endTime)
+			assert(startTime <= endTime)
 			self.id = Identifier<Self, UUID>(id: UUID())
 			
 			self.identifier = identifier

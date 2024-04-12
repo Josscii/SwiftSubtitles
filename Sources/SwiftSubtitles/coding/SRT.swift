@@ -202,7 +202,7 @@ public extension Subtitles.Coder.SRT {
 					let s = Subtitles.Time(hour: s_hour, minute: s_min, second: s_sec, millisecond: s_ms)
 					let e = Subtitles.Time(hour: e_hour, minute: e_min, second: e_sec, millisecond: e_ms)
 
-					guard s < e else {
+					guard s <= e else {
 						throw SubTitlesError.startTimeAfterEndTime(item.offset)
 					}
 
