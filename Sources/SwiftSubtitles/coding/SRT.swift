@@ -47,7 +47,7 @@ extension Subtitles.Coder {
 }
 
 /// Regex for matching an SRT time string
-private let SRTTimeRegex__ = try! DSFRegex(#"(\d+):(\d{1,2}):(\d{1,2}),(\d{3})\s-->\s(\d+):(\d{2}):(\d{1,2}),(\d{3})"#)
+private let SRTTimeRegex__ = try! DSFRegex(#"(\d+):(\d{1,2}):(\d{1,2}),(\d{1,3})\s-->\s(\d+):(\d{2}):(\d{1,2}),(\d{1,3})"#)
 
 public extension Subtitles.Coder.SRT {
 	/// Encode subtitles as Data
