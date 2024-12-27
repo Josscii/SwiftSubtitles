@@ -47,7 +47,7 @@ extension Subtitles.Coder {
 }
 
 /// Regex for matching an SRT time string
-private let SRTTimeRegex__ = try! DSFRegex(#"(\d+):(\d{1,2}):(\d{1,2}),(\d{1,3})\s-->\s(\d+):(\d{2}):(\d{1,2}),(\d{1,3})"#)
+private let SRTTimeRegex__ = try! DSFRegex(#"(\d+):(\d{1,2}):(-?\d{1,2}),(\d{1,3})\s-->\s(\d+):(\d{2}):(-?\d{1,2}),(\d{1,3})"#)
 
 public extension Subtitles.Coder.SRT {
 	/// Encode subtitles as Data
@@ -188,21 +188,31 @@ public extension Subtitles.Coder.SRT {
 					guard
 						let s_hour = UInt(line[captures[0]]),
 						let s_min = UInt(line[captures[1]]),
-						let s_sec = UInt(line[captures[2]]),
-						let s_ms = UInt(line[captures[3]]),
+						var s_sec = Int(line[captures[2]]),
+						var s_ms = UInt(line[captures[3]]),
 
 						let e_hour = UInt(line[captures[4]]),
 						let e_min = UInt(line[captures[5]]),
-						let e_sec = UInt(line[captures[6]]),
-						let e_ms = UInt(line[captures[7]])
+						var e_sec = Int(line[captures[6]]),
+                        var e_ms = UInt(line[captures[7]])
 					else {
 						throw SubTitlesError.invalidTime(item.offset)
 					}
+                    
+                    if s_sec < 0 {
+                        s_sec = 0
+                        s_ms = 0
+                    }
+                    
+                    if e_sec < 0 {
+                        e_sec = 0
+                        e_ms = 0
+                    }
 
-					let s = Subtitles.Time(hour: s_hour, minute: s_min, second: s_sec, millisecond: s_ms)
+                    let s = Subtitles.Time(hour: s_hour, minute: s_min, second: UInt(s_sec), millisecond: s_ms)
 
 					// Make sure that the end time is always >= the start time
-					let e = max(s, Subtitles.Time(hour: e_hour, minute: e_min, second: e_sec, millisecond: e_ms))
+					let e = max(s, Subtitles.Time(hour: e_hour, minute: e_min, second: UInt(e_sec), millisecond: e_ms))
 
 					start = s
 					end = e
