@@ -168,7 +168,9 @@ public extension Subtitles.Coder.SRT {
 				if currentState == .blank {
 					// Should be the position
 					guard let p = Int(line) else {
-						throw SubTitlesError.invalidPosition(item.offset + 1)
+//						throw SubTitlesError.invalidPosition(item.offset + 1)
+                        // if we can't parse the position, then just ignore it
+                        return
 					}
 					position = p
 					currentState = .position
