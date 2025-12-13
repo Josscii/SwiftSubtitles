@@ -1,7 +1,5 @@
 //
-//  String+extensions.swift
-//
-//  Copyright © 2024 Darren Ford. All rights reserved.
+//  Copyright © 2025 Darren Ford. All rights reserved.
 //
 //  MIT License
 //
@@ -57,5 +55,35 @@ extension String {
 			}
 		}
 		return result
+	}
+
+	/// Return a XML-escaped representation
+	/// - Returns: An html safe string
+	func xmlEscaped() -> String {
+		return self.replacingOccurrences(of: "&", with: "&amp;")
+			.replacingOccurrences(of: "<", with: "&lt;")
+			.replacingOccurrences(of: ">", with: "&gt;")
+			.replacingOccurrences(of: "\"", with: "&quot;")
+			.replacingOccurrences(of: "'", with: "&apos;")
+	}
+
+	/// Return a XML-unescaped representation
+	/// - Returns: An html safe string
+	func xmlUnescaped() -> String {
+		return self.replacingOccurrences(of: "&amp;", with: "&")
+			.replacingOccurrences(of: "&lt;", with: "<")
+			.replacingOccurrences(of: "&gt;", with: ">")
+			.replacingOccurrences(of: "&quot;", with: "\"")
+			.replacingOccurrences(of: "&apos;", with: "'")
+	}
+}
+
+extension Array where Element == String {
+	/// Remove empty lines
+	@inlinable func removingEmptyLines() -> Self {
+		self.compactMap {
+			if $0.isEmpty { return nil }
+			else { return $0 }
+		}
 	}
 }

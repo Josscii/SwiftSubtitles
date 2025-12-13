@@ -24,28 +24,20 @@
 
 import Foundation
 
-/// Errors thrown by the library
-public enum SubTitlesError: Error {
-	/// File type is not supported
-	case unsupportedFileType(String)
-	/// File is invalid
-	case invalidFile
-	/// Found end of file
-	case unexpectedEOF
-	/// Unsupported string encoding
-	case invalidEncoding
-	/// Expected an integer cue position
-	case invalidPosition(Int)
-	/// Time field could not be parsed
-	case invalidTime(Int)
-	/// The text for a cue is missing
-	case missingText(Int)
-	/// Unexpected end of cue
-	case unexpectedEndOfCue(Int)
-	/// The coder only supports binary coding
-	case coderGeneratesBinaryContent
-	/// The coder doesn't support encoding
-	case coderDoesntSupportEncoding
-	/// Start or end time is too large for the export format
-	case timeTooLargeToExport(Subtitles.Cue)
+extension BinaryFloatingPoint {
+	/// Clamp an Binary flowing point value to a closed range
+	/// - Parameter range: The range
+	/// - Returns: A clamped value
+	@inlinable func clamped(_ range: ClosedRange<Self>) -> Self {
+		max(range.lowerBound, min(range.upperBound, self))
+	}
+}
+
+extension ExpressibleByIntegerLiteral where Self: Strideable {
+	/// Clamp an integer literal to a closed range
+	/// - Parameter range: The range
+	/// - Returns: A clamped value
+	@inlinable func clamped(_ range: ClosedRange<Self>) -> Self {
+		max(range.lowerBound, min(range.upperBound, self))
+	}
 }

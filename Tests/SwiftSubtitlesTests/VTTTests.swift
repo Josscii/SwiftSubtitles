@@ -353,9 +353,9 @@ WEBVTT
 		XCTAssertNil(text, "Expected nil, got \(text ?? "")")
 	}
 
-    func testVTTWithEmptyAndMultilineCues() throws {
-        // A newline must precede a cue, but an empty payload is valid.
-        let sampleVTTContent = """
+	func testVTTWithEmptyAndMultilineCues() throws {
+		// A newline must precede a cue, but an empty payload is valid.
+		let sampleVTTContent = """
 WEBVTT
 
 00:00:01.000 --> 00:00:04.000
@@ -367,15 +367,15 @@ WEBVTT
 00:00:09.000 --> 00:00:12.000
 
 """
-		 let coder = Subtitles.Coder.VTT()
-		 let subtitles = try coder.decode(sampleVTTContent)
-		 XCTAssertEqual(3, subtitles.cues.count, "Expected 3 cues, got \(subtitles.cues.count)")
-		 // Accessing the middle cue with multiline text.
-		 let multilineText = subtitles.cues[1].text
-		 let lines = multilineText.split(separator: "\n")
-		 let numberOfLines = lines.count
-		 XCTAssertEqual(2, numberOfLines, "Expected 2 lines, got \(numberOfLines)")
-	 }
+		let coder = Subtitles.Coder.VTT()
+		let subtitles = try coder.decode(sampleVTTContent)
+		XCTAssertEqual(3, subtitles.cues.count, "Expected 3 cues, got \(subtitles.cues.count)")
+		// Accessing the middle cue with multiline text.
+		let multilineText = subtitles.cues[1].text
+		let lines = multilineText.split(separator: "\n")
+		let numberOfLines = lines.count
+		XCTAssertEqual(2, numberOfLines, "Expected 2 lines, got \(numberOfLines)")
+	}
 
 	func testMissingNewlineTreatsTimeLineAsText() throws {
 		// An empty newline must precede a cue.
@@ -439,5 +439,22 @@ WEBVTT
 		let content = try Subtitles.Coder.VTT().encode(subtitles: subtitles)
 		XCTAssert(content.count > 0)
 		XCTAssertFalse(content.contains("<v"))  // Should be no <v tags
+	}
+
+	func testEmptyVTTFailureBug16() throws {
+		// Test for fixing error #16 (https://github.com/dagronf/SwiftSubtitles/pull/16)
+
+		// Completely empty data
+		XCTAssertThrowsError(try Subtitles(data: Data(), expectedExtension: "vtt", encoding: .utf8))
+
+		// Completely empty text
+		let vtt = """
+"""
+		let coder = Subtitles.Coder.VTT()
+		XCTAssertThrowsError(try coder.decode(vtt))
+
+		// Completely empty file
+		let fileURL = try resourceURL(forResource: "empty", withExtension: "vtt")
+		XCTAssertThrowsError(try Subtitles(fileURL: fileURL, encoding: .utf8))
 	}
 }

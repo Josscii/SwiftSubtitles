@@ -1,7 +1,5 @@
 //
-//  Subtitles+codable.swift
-//
-//  Copyright © 2024 Darren Ford. All rights reserved.
+//  Copyright © 2025 Darren Ford. All rights reserved.
 //
 //  MIT License
 //
@@ -115,5 +113,8 @@ extension Subtitles.Coder {
 		Subtitles.Coder.CSV.self,
 		Subtitles.Coder.PodcastsIndex.self,
 		Subtitles.Coder.LRC.self,
+		Subtitles.Coder.TTML.self,
+		Subtitles.Coder.AdvancedSSA.self,
+		Subtitles.Coder.SubStationAlpha.self,
 	]
 }

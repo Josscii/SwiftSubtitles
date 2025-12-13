@@ -1,7 +1,5 @@
 //
-//  VTT.swift
-//
-//  Copyright © 2024 Darren Ford. All rights reserved.
+//  Copyright © 2025 Darren Ford. All rights reserved.
 //
 //  MIT License
 //
@@ -125,7 +123,8 @@ public extension Subtitles.Coder.VTT {
 			.enumerated()
 			.map { (offset: $0.offset, element: $0.element) }
 
-		guard lines[0].element.contains("WEBVTT") else {
+		// If there are no lines, or the first line isn't 'WEBVTT' then invalid file
+		guard let firstLine = lines.first, firstLine.element.contains("WEBVTT") else {
 			throw SubTitlesError.invalidFile
 		}
 
