@@ -135,7 +135,8 @@ public extension Subtitles.Coder.AdvancedSSA {
 		let lines = content.removingBOM().lines
 
 		var currentHeader = ""
-		for line in lines {
+        var dialogLineIndex: Int?
+        for (index, line) in lines.enumerated() {
 			guard line.count > 0 else {
 				// empty line. Reset the current header (usually a spacing between headers)
 				currentHeader = ""
@@ -154,6 +155,16 @@ public extension Subtitles.Coder.AdvancedSSA {
 
 			let setting = iniSettingRegex.matches(for: line)
 			guard setting.count == 1, setting[0].captures.count == 2 else {
+                if let lastDialogLineIndex = dialogLineIndex, lastDialogLineIndex + 1 == index {
+                    // This is likely a multi-line dialogue entry; append to the last cue
+                    let additionalText = line.trimmingCharacters(in: .whitespacesAndNewlines)
+                    if !additionalText.isEmpty {
+                        let lastCue = results.removeLast()
+                        let cue = Subtitles.Cue(startTime: lastCue.startTime, endTime: lastCue.endTime, text: lastCue.text + " " + additionalText, speaker: lastCue.speaker)
+                        results.append(cue)
+                    }
+                    dialogLineIndex = index
+                }
 				continue
 			}
 			let settingTitle = String(line[setting[0].captures[0]])
@@ -176,6 +187,8 @@ public extension Subtitles.Coder.AdvancedSSA {
 			else if settingTitle == "Dialogue" {
 				let cue = try parseDialogue(format: expectedDialogueFields, settingText: settingValue)
 				results.append(cue)
+                
+                dialogLineIndex = index
 			}
 		}
 		return Subtitles(results)
